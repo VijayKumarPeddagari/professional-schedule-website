@@ -1,6 +1,6 @@
 "use client"
 
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Menu, Calendar, LayoutDashboard, Clock, Users, Bell, BarChart3, Settings, LogOut } from "lucide-react"
 import { AnimatedCalendarIcon } from "@/components/animated-icons"
@@ -39,6 +39,9 @@ export function MobileNav() {
               <p className="text-xs text-sidebar-foreground/60 font-normal">Professional Edition</p>
             </div>
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            Mobile navigation menu for SchedulePro dashboard
+          </SheetDescription>
         </SheetHeader>
         
         <nav className="flex-1 px-3 py-4 space-y-1">
