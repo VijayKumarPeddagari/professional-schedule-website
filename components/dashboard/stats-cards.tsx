@@ -11,52 +11,50 @@ import {
 } from "@/components/animated-icons"
 import { TrendingUp, TrendingDown } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-interface StatCard {
-  title: string
-  value: string
-  change: string
-  trend: "up" | "down"
-  icon: React.ReactNode
-  color: string
-}
-
-const stats: StatCard[] = [
-  {
-    title: "Today's Meetings",
-    value: "8",
-    change: "+2 from yesterday",
-    trend: "up",
-    icon: <AnimatedCalendarIcon className="w-6 h-6" />,
-    color: "from-blue-500 to-blue-600",
-  },
-  {
-    title: "Hours Scheduled",
-    value: "6.5h",
-    change: "+1.5h from avg",
-    trend: "up",
-    icon: <AnimatedClockIcon className="w-6 h-6" />,
-    color: "from-emerald-500 to-emerald-600",
-  },
-  {
-    title: "Completed Tasks",
-    value: "12",
-    change: "85% completion",
-    trend: "up",
-    icon: <AnimatedCheckIcon className="w-6 h-6" />,
-    color: "from-amber-500 to-amber-600",
-  },
-  {
-    title: "Team Members",
-    value: "24",
-    change: "3 online now",
-    trend: "up",
-    icon: <AnimatedUserIcon className="w-6 h-6" />,
-    color: "from-rose-500 to-rose-600",
-  },
-]
+import { useAppState } from "@/components/dashboard/app-state"
 
 export function StatsCards() {
+  const { appointments, tasks, contacts } = useAppState()
+
+  const todayMeetings = appointments.filter((apt) => apt.date === "2026-02-05").length
+  const completedTasks = tasks.filter((t) => t.completed).length
+  const totalTasks = tasks.length
+  const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+
+  const stats = [
+    {
+      title: "Today's Meetings",
+      value: todayMeetings.toString(),
+      change: "+2 from yesterday",
+      trend: "up" as const,
+      icon: <AnimatedCalendarIcon className="w-6 h-6" />,
+      color: "from-blue-500 to-blue-600",
+    },
+    {
+      title: "Hours Scheduled",
+      value: "6.5h",
+      change: "+1.5h from avg",
+      trend: "up" as const,
+      icon: <AnimatedClockIcon className="w-6 h-6" />,
+      color: "from-emerald-500 to-emerald-600",
+    },
+    {
+      title: "Completed Tasks",
+      value: `${completedTasks}/${totalTasks}`,
+      change: `${completionRate}% completion`,
+      trend: completionRate >= 50 ? "up" as const : "down" as const,
+      icon: <AnimatedCheckIcon className="w-6 h-6" />,
+      color: "from-amber-500 to-amber-600",
+    },
+    {
+      title: "Contacts",
+      value: contacts.length.toString(),
+      change: "3 online now",
+      trend: "up" as const,
+      icon: <AnimatedUserIcon className="w-6 h-6" />,
+      color: "from-rose-500 to-rose-600",
+    },
+  ]
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat, index) => (

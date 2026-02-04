@@ -9,6 +9,9 @@ import { QuickActions } from "@/components/dashboard/quick-actions"
 import { ActivityFeed } from "@/components/dashboard/activity-feed"
 import { ProductivityChart } from "@/components/dashboard/productivity-chart"
 import { MobileNav } from "@/components/dashboard/mobile-nav"
+import { AppStateProvider, useAppState } from "@/components/dashboard/app-state"
+import { NewEventDialog } from "@/components/dashboard/dialogs/new-event-dialog"
+import { NotificationsPanel } from "@/components/dashboard/dialogs/notifications-panel"
 import { Bell, Search, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,8 +19,16 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { PulsingDot } from "@/components/animated-icons"
 import { useState } from "react"
 
-export default function DashboardPage() {
+function DashboardContent() {
   const [searchFocused, setSearchFocused] = useState(false)
+  const [newEventOpen, setNewEventOpen] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const { appointments, notifications } = useAppState()
+
+  const todayMeetings = appointments.filter(
+    (apt) => apt.date === "2026-02-05"
+  ).length
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -36,7 +47,7 @@ export default function DashboardPage() {
               <div className="hidden sm:block">
                 <h2 className="text-xl font-bold text-foreground">Good Morning, John</h2>
                 <p className="text-sm text-muted-foreground">
-                  You have <span className="text-accent font-semibold">4 meetings</span> scheduled today
+                  You have <span className="text-accent font-semibold">{todayMeetings} meetings</span> scheduled today
                 </p>
               </div>
             </div>
@@ -48,6 +59,8 @@ export default function DashboardPage() {
                 <Input
                   placeholder="Search appointments, contacts..."
                   className="pl-10 bg-muted/50 border-border/50 focus:bg-background focus:border-accent transition-all duration-300"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
                 />
@@ -57,17 +70,25 @@ export default function DashboardPage() {
             {/* Right Side */}
             <div className="flex items-center gap-2">
               <Button
+                onClick={() => setNewEventOpen(true)}
                 className="hidden sm:flex gap-2 bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg shadow-accent/20 transition-all duration-300 hover:shadow-accent/40 hover:scale-105"
               >
                 <Plus className="w-4 h-4" />
                 <span>New Event</span>
               </Button>
 
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                onClick={() => setNotificationsOpen(true)}
+              >
                 <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1">
-                  <PulsingDot color="bg-red-500" />
-                </span>
+                {notifications.length > 0 && (
+                  <span className="absolute top-1 right-1">
+                    <PulsingDot color="bg-red-500" />
+                  </span>
+                )}
                 <span className="sr-only">Notifications</span>
               </Button>
 
@@ -120,6 +141,18 @@ export default function DashboardPage() {
           </div>
         </footer>
       </div>
+
+      {/* Dialogs */}
+      <NewEventDialog open={newEventOpen} onOpenChange={setNewEventOpen} />
+      <NotificationsPanel open={notificationsOpen} onOpenChange={setNotificationsOpen} />
     </div>
+  )
+}
+
+export default function DashboardPage() {
+  return (
+    <AppStateProvider>
+      <DashboardContent />
+    </AppStateProvider>
   )
 }

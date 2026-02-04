@@ -4,68 +4,98 @@ import React from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Clock, CheckCircle2, XCircle, Calendar, UserPlus, MessageSquare, ChevronRight } from "lucide-react"
+import { Clock, CheckCircle2, XCircle, Calendar, UserPlus, MessageSquare, ChevronRight, Info, AlertTriangle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAppState } from "@/components/dashboard/app-state"
 
-interface Activity {
-  id: string
-  type: "completed" | "cancelled" | "scheduled" | "joined" | "message"
-  title: string
-  description: string
-  time: string
-  icon: React.ReactNode
-  color: string
-}
-
-const activities: Activity[] = [
+const defaultActivities = [
   {
     id: "1",
-    type: "completed",
+    type: "completed" as const,
     title: "Meeting Completed",
     description: "Team Standup finished",
     time: "2 min ago",
-    icon: <CheckCircle2 className="w-4 h-4" />,
-    color: "text-emerald-500 bg-emerald-500/10",
   },
   {
     id: "2",
-    type: "scheduled",
+    type: "scheduled" as const,
     title: "New Meeting Scheduled",
     description: "Product Review at 10:30 AM",
     time: "15 min ago",
-    icon: <Calendar className="w-4 h-4" />,
-    color: "text-blue-500 bg-blue-500/10",
   },
   {
     id: "3",
-    type: "joined",
+    type: "joined" as const,
     title: "New Team Member",
     description: "Sarah K. joined Design Team",
     time: "1 hour ago",
-    icon: <UserPlus className="w-4 h-4" />,
-    color: "text-purple-500 bg-purple-500/10",
   },
   {
     id: "4",
-    type: "cancelled",
+    type: "cancelled" as const,
     title: "Meeting Cancelled",
     description: "Budget Review rescheduled",
     time: "2 hours ago",
-    icon: <XCircle className="w-4 h-4" />,
-    color: "text-red-500 bg-red-500/10",
   },
   {
     id: "5",
-    type: "message",
+    type: "message" as const,
     title: "New Message",
     description: "Mike R. sent you a message",
     time: "3 hours ago",
-    icon: <MessageSquare className="w-4 h-4" />,
-    color: "text-amber-500 bg-amber-500/10",
   },
 ]
 
+const iconMap = {
+  completed: <CheckCircle2 className="w-4 h-4" />,
+  cancelled: <XCircle className="w-4 h-4" />,
+  scheduled: <Calendar className="w-4 h-4" />,
+  joined: <UserPlus className="w-4 h-4" />,
+  message: <MessageSquare className="w-4 h-4" />,
+  success: <CheckCircle2 className="w-4 h-4" />,
+  error: <XCircle className="w-4 h-4" />,
+  info: <Info className="w-4 h-4" />,
+  warning: <AlertTriangle className="w-4 h-4" />,
+}
+
+const colorMap = {
+  completed: "text-emerald-500 bg-emerald-500/10",
+  cancelled: "text-red-500 bg-red-500/10",
+  scheduled: "text-blue-500 bg-blue-500/10",
+  joined: "text-purple-500 bg-purple-500/10",
+  message: "text-amber-500 bg-amber-500/10",
+  success: "text-emerald-500 bg-emerald-500/10",
+  error: "text-red-500 bg-red-500/10",
+  info: "text-blue-500 bg-blue-500/10",
+  warning: "text-amber-500 bg-amber-500/10",
+}
+
 export function ActivityFeed() {
+  const { notifications } = useAppState()
+
+  const formatTime = (date: Date) => {
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
+    const minutes = Math.floor(diff / 60000)
+    const hours = Math.floor(diff / 3600000)
+
+    if (minutes < 1) return "Just now"
+    if (minutes < 60) return `${minutes}m ago`
+    if (hours < 24) return `${hours}h ago`
+    return date.toLocaleDateString()
+  }
+
+  // Convert notifications to activities format
+  const notificationActivities = notifications.slice(0, 3).map((n) => ({
+    id: n.id,
+    type: n.type,
+    title: n.title,
+    description: n.message,
+    time: formatTime(n.timestamp),
+  }))
+
+  // Combine with default activities
+  const activities = [...notificationActivities, ...defaultActivities.slice(0, 5 - notificationActivities.length)]
   return (
     <Card className="border-border/50 bg-card">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
@@ -86,8 +116,8 @@ export function ActivityFeed() {
             )}
             style={{ animationDelay: `${index * 50}ms`, animationFillMode: "both" }}
           >
-            <div className={cn("p-2 rounded-lg shrink-0", activity.color)}>
-              {activity.icon}
+            <div className={cn("p-2 rounded-lg shrink-0", colorMap[activity.type as keyof typeof colorMap] || colorMap.info)}>
+              {iconMap[activity.type as keyof typeof iconMap] || iconMap.info}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground">{activity.title}</p>

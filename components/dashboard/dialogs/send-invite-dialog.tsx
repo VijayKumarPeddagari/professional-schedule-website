@@ -1,0 +1,113 @@
+"use client"
+
+import React from "react"
+
+import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { useAppState } from "@/components/dashboard/app-state"
+import { Mail, Send, Users } from "lucide-react"
+
+interface SendInviteDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+export function SendInviteDialog({ open, onOpenChange }: SendInviteDialogProps) {
+  const { addNotification } = useAppState()
+  const [recipients, setRecipients] = useState("")
+  const [subject, setSubject] = useState("")
+  const [message, setMessage] = useState("")
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!recipients || !subject) return
+
+    // Simulate sending invite
+    addNotification({
+      type: "success",
+      title: "Invite Sent",
+      message: `Meeting invite sent to ${recipients.split(",").length} recipient(s).`,
+    })
+
+    // Reset form
+    setRecipients("")
+    setSubject("")
+    setMessage("")
+    onOpenChange(false)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[500px] bg-card border-border">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold flex items-center gap-2">
+            <Mail className="w-5 h-5 text-accent" />
+            Send Meeting Invite
+          </DialogTitle>
+          <DialogDescription>
+            Send a meeting invitation to your team members or contacts.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="recipients" className="flex items-center gap-1">
+              <Users className="w-3.5 h-3.5" />
+              Recipients *
+            </Label>
+            <Input
+              id="recipients"
+              placeholder="john@example.com, sarah@example.com"
+              value={recipients}
+              onChange={(e) => setRecipients(e.target.value)}
+              required
+            />
+            <p className="text-xs text-muted-foreground">Separate email addresses with commas</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="subject">Subject *</Label>
+            <Input
+              id="subject"
+              placeholder="Meeting: Project Discussion"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="message">Message</Label>
+            <Textarea
+              id="message"
+              placeholder="Add a personal message to your invite..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={4}
+            />
+          </div>
+
+          <DialogFooter className="pt-4">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground gap-2">
+              <Send className="w-4 h-4" />
+              Send Invite
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
