@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAppState } from "@/components/dashboard/app-state"
 import { UserPlus, Mail, Phone, Building } from "lucide-react"
+import { useDialogPosition } from "@/hooks/use-dialog-position"
 
 interface AddContactDialogProps {
   open: boolean
@@ -28,6 +29,7 @@ export function AddContactDialog({ open, onOpenChange }: AddContactDialogProps) 
   const [email, setEmail] = useState("")
   const [phone, setPhone] = useState("")
   const [company, setCompany] = useState("")
+  const position = useDialogPosition()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,9 +50,17 @@ export function AddContactDialog({ open, onOpenChange }: AddContactDialogProps) 
     onOpenChange(false)
   }
 
-  return (
+return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-card border-border">
+      <DialogContent 
+        className="sm:max-w-[425px] bg-card border-border max-h-[85vh] overflow-y-auto"
+        style={{
+          position: "fixed",
+          left: position.left,
+          top: "10%",
+          transform: position.transform,
+        } as React.CSSProperties}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <UserPlus className="w-5 h-5 text-accent" />

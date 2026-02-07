@@ -1,4 +1,4 @@
-"use client"
+<parameter name="content">"use client"
 
 import React from "react"
 
@@ -29,6 +29,7 @@ export function SendInviteDialog({ open, onOpenChange }: SendInviteDialogProps) 
   const [recipients, setRecipients] = useState("")
   const [subject, setSubject] = useState("")
   const [message, setMessage] = useState("")
+  const position = useDialogPosition()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,7 +51,15 @@ export function SendInviteDialog({ open, onOpenChange }: SendInviteDialogProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-card border-border fixed left-[calc(50%+8rem)] top-[10%] translate-x-[-50%] translate-y-0 max-h-[85vh] overflow-y-auto">
+      <DialogContent 
+        className="sm:max-w-[500px] bg-card border-border max-h-[85vh] overflow-y-auto"
+        style={{
+          position: "fixed",
+          left: position.left,
+          top: "10%",
+          transform: position.transform,
+        } as React.CSSProperties}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <Mail className="w-5 h-5 text-accent" />
@@ -112,3 +121,4 @@ export function SendInviteDialog({ open, onOpenChange }: SendInviteDialogProps) 
     </Dialog>
   )
 }
+</parameter>

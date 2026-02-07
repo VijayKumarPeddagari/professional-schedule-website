@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select"
 import { useAppState } from "@/components/dashboard/app-state"
 import { FileText, Calendar, Flag } from "lucide-react"
+import { useDialogPosition } from "@/hooks/use-dialog-position"
 
 interface NewTaskDialogProps {
   open: boolean
@@ -36,6 +37,7 @@ export function NewTaskDialog({ open, onOpenChange }: NewTaskDialogProps) {
   const [description, setDescription] = useState("")
   const [dueDate, setDueDate] = useState("")
   const [priority, setPriority] = useState<"high" | "medium" | "low">("medium")
+  const position = useDialogPosition()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,9 +59,17 @@ export function NewTaskDialog({ open, onOpenChange }: NewTaskDialogProps) {
     onOpenChange(false)
   }
 
-  return (
+return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-card border-border">
+      <DialogContent 
+        className="sm:max-w-[425px] bg-card border-border max-h-[85vh] overflow-y-auto"
+        style={{
+          position: "fixed",
+          left: position.left,
+          top: "10%",
+          transform: position.transform,
+        } as React.CSSProperties}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <FileText className="w-5 h-5 text-accent" />

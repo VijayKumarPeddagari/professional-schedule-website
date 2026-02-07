@@ -23,7 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useAppState } from "@/components/dashboard/app-state"
-import { Calendar, Clock, MapPin, Users, Video } from "lucide-react"
+import { Calendar, Clock, MapPin, Users, Video, CheckCircle2 } from "lucide-react"
+import { toast } from "sonner"
+import { useDialogPosition } from "@/hooks/use-dialog-position"
 
 interface NewEventDialogProps {
   open: boolean
@@ -50,6 +52,7 @@ export function NewEventDialog({ open, onOpenChange }: NewEventDialogProps) {
   const [attendees, setAttendees] = useState("")
   const [description, setDescription] = useState("")
   const [color, setColor] = useState("bg-blue-500")
+  const position = useDialogPosition()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -68,6 +71,25 @@ export function NewEventDialog({ open, onOpenChange }: NewEventDialogProps) {
       isLive: false,
     })
 
+    // Show toast notification in the middle of the page
+    toast.success(
+      <div className="flex items-center gap-3">
+        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+        <div>
+          <p className="font-semibold">Event Created Successfully!</p>
+          <p className="text-sm text-muted-foreground">"{title}" has been added to your calendar</p>
+        </div>
+      </div>,
+      {
+        duration: 4000,
+        style: {
+          background: 'var(--background)',
+          color: 'var(--foreground)',
+          border: '1px solid var(--border)',
+        },
+      }
+    )
+
     // Reset form
     setTitle("")
     setDate("")
@@ -81,15 +103,23 @@ export function NewEventDialog({ open, onOpenChange }: NewEventDialogProps) {
     onOpenChange(false)
   }
 
-  return (
+return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-card border-border">
+      <DialogContent 
+        className="sm:max-w-[500px] bg-card border-border max-h-[85vh] overflow-y-auto"
+        style={{
+          position: "fixed",
+          left: position.left,
+          top: "10%",
+          transform: position.transform,
+        } as React.CSSProperties}
+      >
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center gap-2">
+          <DialogTitle className="text-xl font-bold flex items-center gap-2 justify-center">
             <Calendar className="w-5 h-5 text-accent" />
             Schedule New Event
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-center">
             Add a new event to your calendar. Fill in the details below.
           </DialogDescription>
         </DialogHeader>

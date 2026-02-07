@@ -12,6 +12,7 @@ import { MobileNav } from "@/components/dashboard/mobile-nav"
 import { AppStateProvider, useAppState } from "@/components/dashboard/app-state"
 import { NewEventDialog } from "@/components/dashboard/dialogs/new-event-dialog"
 import { NotificationsPanel } from "@/components/dashboard/dialogs/notifications-panel"
+import { ProfileDialog } from "@/components/dashboard/dialogs/profile-dialog"
 import { Bell, Search, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,6 +24,7 @@ function DashboardContent() {
   const [searchFocused, setSearchFocused] = useState(false)
   const [newEventOpen, setNewEventOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const { appointments, notifications } = useAppState()
 
@@ -95,12 +97,15 @@ function DashboardContent() {
               <ThemeToggle />
 
               <div className="hidden sm:flex items-center gap-3 ml-2 pl-4 border-l border-border">
-                <div className="relative">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent to-accent/50 flex items-center justify-center text-accent-foreground font-bold text-sm">
+                <button
+                  onClick={() => setProfileOpen(true)}
+                  className="relative group cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent to-accent/50 flex items-center justify-center text-accent-foreground font-bold text-sm group-hover:ring-2 group-hover:ring-accent/50 transition-all">
                     JD
                   </div>
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background" />
-                </div>
+                </button>
               </div>
             </div>
           </div>
@@ -111,18 +116,25 @@ function DashboardContent() {
           {/* Stats Cards */}
           <StatsCards />
 
-          {/* Main Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* Main Grid - Responsive Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {/* Mobile: Stack all, Tablet: 2 columns, Desktop: 3 columns */}
+            
             {/* Left Column - Schedule */}
-            <div className="xl:col-span-2 space-y-6">
+            <div className="lg:col-span-2 xl:col-span-2 space-y-6 order-1 lg:order-1">
               <ScheduleTimeline />
-              <ProductivityChart />
+              <div className="hidden lg:block">
+                <ProductivityChart />
+              </div>
             </div>
 
             {/* Right Column - Calendar & Quick Actions */}
-            <div className="space-y-6">
+            <div className="space-y-6 order-2 lg:order-2 xl:order-3">
               <CalendarWidget />
               <QuickActions />
+              <div className="lg:hidden">
+                <ProductivityChart />
+              </div>
               <UpcomingEvents />
               <ActivityFeed />
             </div>
@@ -145,6 +157,7 @@ function DashboardContent() {
       {/* Dialogs */}
       <NewEventDialog open={newEventOpen} onOpenChange={setNewEventOpen} />
       <NotificationsPanel open={notificationsOpen} onOpenChange={setNotificationsOpen} />
+      <ProfileDialog open={profileOpen} onOpenChange={setProfileOpen} />
     </div>
   )
 }

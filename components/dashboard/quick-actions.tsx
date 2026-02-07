@@ -87,26 +87,26 @@ export function QuickActions() {
   return (
     <>
       <Card className="border-border/50 bg-card">
-        <CardHeader className="flex flex-row items-center gap-2 pb-4">
-          <Zap className="w-5 h-5 text-accent" />
-          <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
+        <CardHeader className="flex flex-row items-center gap-2 pb-3 sm:pb-4">
+          <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
+          <CardTitle className="text-base sm:text-lg font-semibold">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-3 gap-2 sm:gap-3">
             {quickActionsData.map((action, index) => (
               <Button
                 key={action.label}
                 variant="ghost"
                 onClick={() => openDialog(action.dialogKey)}
                 className={cn(
-                  "h-auto flex-col gap-2 py-4 rounded-xl transition-all duration-300",
+                  "h-auto flex-col gap-1.5 sm:gap-2 py-3 sm:py-4 rounded-xl transition-all duration-300",
                   action.bgColor,
                   "animate-in fade-in zoom-in-95"
                 )}
                 style={{ animationDelay: `${index * 50}ms`, animationFillMode: "both" }}
               >
                 <span className={action.color}>{action.icon}</span>
-                <span className="text-xs font-medium text-foreground">{action.label}</span>
+                <span className="text-[10px] sm:text-xs font-medium text-foreground leading-tight">{action.label}</span>
               </Button>
             ))}
           </div>

@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAppState } from "@/components/dashboard/app-state"
 import { Clock, Calendar, Bell } from "lucide-react"
+import { useDialogPosition } from "@/hooks/use-dialog-position"
 
 interface SetReminderDialogProps {
   open: boolean
@@ -27,6 +28,7 @@ export function SetReminderDialog({ open, onOpenChange }: SetReminderDialogProps
   const [title, setTitle] = useState("")
   const [date, setDate] = useState("")
   const [time, setTime] = useState("")
+  const position = useDialogPosition()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,9 +47,17 @@ export function SetReminderDialog({ open, onOpenChange }: SetReminderDialogProps
     onOpenChange(false)
   }
 
-  return (
+return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] bg-card border-border">
+      <DialogContent 
+        className="sm:max-w-[400px] bg-card border-border max-h-[85vh] overflow-y-auto"
+        style={{
+          position: "fixed",
+          left: position.left,
+          top: "10%",
+          transform: position.transform,
+        } as React.CSSProperties}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <Bell className="w-5 h-5 text-accent" />

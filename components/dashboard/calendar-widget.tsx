@@ -93,12 +93,12 @@ export function CalendarWidget() {
   return (
     <Card className="border-border/50 bg-card">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg font-semibold">Calendar</CardTitle>
+        <CardTitle className="text-base sm:text-lg font-semibold">Calendar</CardTitle>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={goToPrevMonth}>
             <ChevronLeft className="w-4 h-4" />
           </Button>
-          <span className="text-sm font-medium min-w-[120px] text-center">
+          <span className="text-xs sm:text-sm font-medium min-w-[100px] sm:min-w-[120px] text-center">
             {MONTHS[month]} {year}
           </span>
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={goToNextMonth}>
@@ -108,26 +108,27 @@ export function CalendarWidget() {
       </CardHeader>
       <CardContent>
         {/* Day headers */}
-        <div className="grid grid-cols-7 gap-1 mb-2">
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-1 sm:mb-2">
           {DAYS.map((day) => (
             <div
               key={day}
-              className="text-center text-xs font-medium text-muted-foreground py-2"
+              className="text-center text-[10px] sm:text-xs font-medium text-muted-foreground py-1 sm:py-2"
             >
-              {day}
+              <span className="hidden sm:inline">{day}</span>
+              <span className="sm:hidden">{day.slice(0, 2)}</span>
             </div>
           ))}
         </div>
 
         {/* Calendar grid */}
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
           {days.map((day, index) => (
             <button
               type="button"
               key={`${day.day}-${index}`}
               onClick={() => day.isCurrentMonth && setSelectedDay(day.day)}
               className={cn(
-                "relative aspect-square flex flex-col items-center justify-center rounded-lg text-sm transition-all duration-200",
+                "relative aspect-square flex flex-col items-center justify-center rounded-lg text-xs sm:text-sm transition-all duration-200",
                 day.isCurrentMonth
                   ? "text-foreground hover:bg-muted"
                   : "text-muted-foreground/40",
@@ -138,7 +139,7 @@ export function CalendarWidget() {
             >
               <span>{day.day}</span>
               {day.hasEvents && day.isCurrentMonth && (
-                <div className="absolute bottom-1 flex gap-0.5">
+                <div className="absolute bottom-0.5 sm:bottom-1 flex gap-0.5">
                   {Array.from({ length: Math.min(day.eventCount || 0, 3) }).map((_, i) => (
                     <span
                       key={i}
@@ -155,17 +156,19 @@ export function CalendarWidget() {
         </div>
 
         {/* Legend */}
-        <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-border">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="w-2 h-2 rounded-full bg-accent" />
-            Today
+        <div className="flex items-center justify-center gap-2 sm:gap-4 mt-3 sm:pt-4 border-t border-border">
+          <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-accent" />
+            <span className="hidden sm:inline">Today</span>
+            <span className="sm:hidden">Now</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground">
             <span className="flex gap-0.5">
-              <span className="w-1 h-1 rounded-full bg-accent" />
-              <span className="w-1 h-1 rounded-full bg-accent" />
+              <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-accent" />
+              <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-accent" />
             </span>
-            Has Events
+            <span className="hidden sm:inline">Has Events</span>
+            <span className="sm:hidden">Events</span>
           </div>
         </div>
       </CardContent>

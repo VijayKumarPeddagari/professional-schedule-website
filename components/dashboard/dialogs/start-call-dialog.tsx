@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { useAppState } from "@/components/dashboard/app-state"
 import { Video, Mic, Camera, Phone, Copy, Check } from "lucide-react"
+import { useDialogPosition } from "@/hooks/use-dialog-position"
 
 interface StartCallDialogProps {
   open: boolean
@@ -27,6 +28,7 @@ export function StartCallDialog({ open, onOpenChange }: StartCallDialogProps) {
   const [camera, setCamera] = useState(true)
   const [microphone, setMicrophone] = useState(true)
   const [copied, setCopied] = useState(false)
+  const position = useDialogPosition()
 
   const meetingLink = "https://meet.schedulepro.com/jd-" + Math.random().toString(36).substring(7)
 
@@ -45,9 +47,17 @@ export function StartCallDialog({ open, onOpenChange }: StartCallDialogProps) {
     onOpenChange(false)
   }
 
-  return (
+return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[450px] bg-card border-border">
+      <DialogContent 
+        className="sm:max-w-[450px] bg-card border-border max-h-[85vh] overflow-y-auto"
+        style={{
+          position: "fixed",
+          left: position.left,
+          top: "10%",
+          transform: position.transform,
+        } as React.CSSProperties}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <Video className="w-5 h-5 text-accent" />

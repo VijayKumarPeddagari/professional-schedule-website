@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { useRouter, usePathname } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 import {
@@ -26,44 +27,49 @@ const navItems: NavItem[] = [
     label: "Dashboard",
     icon: <LayoutDashboard className="w-5 h-5" />,
     animatedIcon: <AnimatedStatsIcon className="w-5 h-5" />,
-    href: "#dashboard",
+    href: "/",
   },
   {
     label: "Calendar",
     icon: <Calendar className="w-5 h-5" />,
     animatedIcon: <AnimatedCalendarIcon className="w-5 h-5" />,
-    href: "#calendar",
+    href: "/calendar",
   },
   {
     label: "Schedule",
     icon: <Clock className="w-5 h-5" />,
     animatedIcon: <AnimatedClockIcon className="w-5 h-5" />,
-    href: "#schedule",
+    href: "/schedule",
   },
   {
     label: "Contacts",
     icon: <Users className="w-5 h-5" />,
     animatedIcon: <AnimatedUserIcon className="w-5 h-5" />,
-    href: "#contacts",
+    href: "/contacts",
   },
   {
     label: "Notifications",
     icon: <Bell className="w-5 h-5" />,
     animatedIcon: <AnimatedBellIcon className="w-5 h-5" />,
-    href: "#notifications",
+    href: "/notifications",
     badge: 3,
   },
   {
     label: "Analytics",
     icon: <BarChart3 className="w-5 h-5" />,
     animatedIcon: <AnimatedStatsIcon className="w-5 h-5" />,
-    href: "#analytics",
+    href: "/analytics",
   },
 ]
 
 export function DashboardSidebar() {
-  const [activeItem, setActiveItem] = useState("Dashboard")
+  const router = useRouter()
+  const pathname = usePathname()
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+
+  const handleNavigate = (href: string) => {
+    router.push(href)
+  }
 
   return (
     <aside className="hidden lg:flex flex-col w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
@@ -90,18 +96,18 @@ export function DashboardSidebar() {
           <button
             key={item.label}
             type="button"
-            onClick={() => setActiveItem(item.label)}
+            onClick={() => handleNavigate(item.href)}
             onMouseEnter={() => setHoveredItem(item.label)}
             onMouseLeave={() => setHoveredItem(null)}
             className={cn(
               "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 group relative",
-              activeItem === item.label
+              pathname === item.href
                 ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-lg shadow-sidebar-primary/20"
                 : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             )}
           >
             <span className="transition-transform duration-300 group-hover:scale-110">
-              {hoveredItem === item.label || activeItem === item.label
+              {hoveredItem === item.label || pathname === item.href
                 ? item.animatedIcon
                 : item.icon}
             </span>
@@ -111,7 +117,7 @@ export function DashboardSidebar() {
                 {item.badge}
               </span>
             )}
-            {activeItem === item.label && (
+            {pathname === item.href && (
               <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-sidebar-primary-foreground rounded-r-full" />
             )}
           </button>
@@ -122,6 +128,7 @@ export function DashboardSidebar() {
       <div className="px-3 py-4 border-t border-sidebar-border space-y-1">
         <button
           type="button"
+          onClick={() => router.push("/settings")}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-300"
         >
           <Settings className="w-5 h-5" />

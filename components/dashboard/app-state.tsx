@@ -162,7 +162,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
   const [reminders, setReminders] = useState<Reminder[]>([])
   const [notifications, setNotifications] = useState<Notification[]>([])
-  const [selectedDate, setSelectedDate] = useState(new Date(2026, 1, 5))
+  const [selectedDate, setSelectedDate] = useState(() => new Date(2026, 1, 5))
   const [activeView, setActiveView] = useState("Dashboard")
 
   const addAppointment = useCallback((appointment: Omit<Appointment, "id">) => {

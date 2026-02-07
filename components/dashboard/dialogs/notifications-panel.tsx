@@ -1,16 +1,17 @@
 "use client"
 
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { useAppState } from "@/components/dashboard/app-state"
-import { Bell, Check, Info, AlertTriangle, XCircle, CheckCircle, X, Trash2 } from "lucide-react"
+import { Bell, Check, Info, AlertTriangle, XCircle, CheckCircle, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useDialogPosition } from "@/hooks/use-dialog-position"
 
 interface NotificationsPanelProps {
   open: boolean
@@ -33,6 +34,7 @@ const colorMap = {
 
 export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelProps) {
   const { notifications, dismissNotification } = useAppState()
+  const position = useDialogPosition()
 
   const formatTime = (date: Date) => {
     const now = new Date()
@@ -46,18 +48,26 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
     return date.toLocaleDateString()
   }
 
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:w-96 bg-card border-border p-0">
-        <SheetHeader className="px-6 py-5 border-b border-border">
-          <SheetTitle className="flex items-center gap-2 text-foreground">
+return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent 
+        className="sm:max-w-[450px] bg-card border-border max-h-[85vh] overflow-hidden flex flex-col"
+        style={{
+          position: "fixed",
+          left: position.left,
+          top: "10%",
+          transform: position.transform,
+        } as React.CSSProperties}
+      >
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-foreground">
             <Bell className="w-5 h-5 text-accent" />
             Notifications
-          </SheetTitle>
-          <SheetDescription>
+          </DialogTitle>
+          <DialogDescription>
             Stay updated with your recent activity
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <div className="flex-1 overflow-auto">
           {notifications.length === 0 ? (
@@ -71,7 +81,7 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-border">
+            <div className="divide-y divide-border -mx-6">
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
@@ -103,7 +113,7 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
                       className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
                       onClick={() => dismissNotification(notification.id)}
                     >
-                      <X className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4" />
                       <span className="sr-only">Dismiss</span>
                     </Button>
                   </div>
@@ -114,14 +124,14 @@ export function NotificationsPanel({ open, onOpenChange }: NotificationsPanelPro
         </div>
 
         {notifications.length > 0 && (
-          <div className="px-6 py-4 border-t border-border">
+          <div className="pt-4 border-t border-border">
             <Button variant="outline" className="w-full gap-2 bg-transparent" size="sm">
               <Check className="w-4 h-4" />
               Mark All as Read
             </Button>
           </div>
         )}
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }
