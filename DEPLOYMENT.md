@@ -1,86 +1,128 @@
 # Deployment Guide for Professional Schedule Website
 
-## Option 1: Vercel Deployment (Recommended)
+## 🚀 Deploy to Netlify (Recommended)
 
-### Step 1: Connect to Vercel
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
-2. Click "Add New Project"
-3. Import your GitHub repository: `VijayKumarPeddagari/professional-schedule-website`
-4. Vercel will automatically detect it's a Next.js project
-5. Click "Deploy"
+### Option 1: Quick Deploy via GitHub (Auto-Deploy)
 
-### Step 2: Automatic Deployments
-- Every push to `main` branch will automatically trigger a new deployment
-- Pull requests will generate preview deployments
-- Custom domain can be added in project settings
-
-### Step 3: Environment Variables (if needed)
-Add these in Vercel Project Settings:
-- `NEXT_PUBLIC_APP_URL`: Your deployed URL
-
-## Option 2: Netlify Deployment
-
-### Step 1: Connect to Netlify
-1. Go to [Netlify](https://app.netlify.com)
-2. Click "Add new site" > "Import an existing project"
-3. Connect to GitHub and select your repository
-4. Build settings:
+1. **Go to Netlify**: https://app.netlify.com
+2. **Click "Add new site"** > **"Import an existing project"**
+3. **Connect to GitHub** and select: `VijayKumarPeddagari/professional-schedule-website`
+4. **Configure Build Settings**:
    - Build command: `npm run build`
    - Publish directory: `.next`
-5. Click "Deploy site"
+   - Node version: `20`
+5. **Click "Deploy site"**
 
-## Option 3: GitHub Pages Deployment
+✅ **Automatic Deployments**: Every push to `main` will trigger a new deployment
 
-1. Update `next.config.mjs`:
-```javascript
-output: 'export',
-images: {
-  unoptimized: true,
+---
+
+### Option 2: Deploy via Drag & Drop
+
+1. **Build locally**:
+   ```bash
+   npm run build
+   ```
+2. **Zip the `.next` folder**
+3. **Go to**: https://app.netlify.com/drop
+4. **Drag & drop** your `.next` folder
+5. **Your site is live!**
+
+---
+
+## 🌐 Deploy to Vercel (Alternative)
+
+1. **Go to**: https://vercel.com
+2. **Click "Add New Project"**
+3. **Import**: `VijayKumarPeddagari/professional-schedule-website`
+4. **Settings auto-detected**:
+   - Framework: Next.js
+   - Build Command: `npm run build`
+   - Output Directory: `.next`
+5. **Click "Deploy"**
+
+---
+
+## 📁 Project Configuration Files
+
+### `vercel.json` (Vercel config)
+```json
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs"
 }
 ```
 
-2. Build the static site:
-```bash
-npm run build
+### `netlify.toml` (Netlify config)
+```toml
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
 ```
 
-3. Upload `.next/static` and `.next/server` folders to GitHub Pages
+---
 
-## Current Project Status
+## 🔧 Deploy via CLI (Optional)
 
-✅ **Repository**: `VijayKumarPeddagari/professional-schedule-website`
-✅ **Framework**: Next.js 16
-✅ **Vercel Config**: `vercel.json` created
-✅ **Ready for Deployment**
-
-## Quick Deploy Commands
-
-### Deploy to Vercel via CLI (requires authentication):
+### Netlify CLI:
 ```bash
+# Install (requires sudo or npx)
+npx netlify-cli deploy --prod --dir=.next
+
+# Or link to existing site
+npx netlify-cli link
+npx netlify-cli deploy --prod
+```
+
+### Vercel CLI:
+```bash
+# Install and deploy
 npx vercel --prod
 ```
 
-### Deploy to Netlify via CLI:
-```bash
-netlify deploy --prod --dir=.next
-```
+---
 
-## After First Deployment
+## 📋 After Deployment
 
-1. Add custom domain in Vercel/Netlify settings
-2. Set up SSL certificate (automatic)
-3. Configure environment variables if needed
-4. Enable CI/CD pipeline for automatic deployments
+### Set Custom Domain (Optional)
+1. **Netlify**: Site Settings > Domain Management > Add domain
+2. **Vercel**: Domain Settings > Add custom domain
 
-## Troubleshooting
+### Environment Variables
+Add these in your hosting platform settings if needed:
+- `NEXT_PUBLIC_APP_URL`: Your deployed URL
 
-- **Build fails**: Check `npm run build` locally first
-- **Images not loading**: Ensure `unoptimized: true` in next.config.mjs
-- **API routes not working**: Switch to Vercel/Netlify, not GitHub Pages
+---
 
-## View Your App
+## 🎯 Your Deployment URLs
 
-After deployment, your app will be available at:
-- **Vercel**: `https://professional-schedule-website.vercel.app`
-- **Netlify**: `https://professional-schedule-website.netlify.app`
+After deployment, your site will be available at:
+
+**Netlify**: `https://professional-schedule-website.netlify.app`
+
+**Vercel**: `https://professional-schedule-website.vercel.app`
+
+---
+
+## ✅ Pre-Deployment Checklist
+
+- [x] Project built successfully with `npm run build`
+- [x] Git repository connected
+- [x] Changes committed and pushed to GitHub
+- [x] Vercel config (`vercel.json`) created
+- [x] Netlify config (`netlify.toml`) created
+- [x] Ready for auto-deploy on push to `main`
+
+---
+
+## 📞 Support
+
+- **Netlify Docs**: https://docs.netlify.com
+- **Vercel Docs**: https://vercel.com/docs
+- **Next.js Deployment**: https://nextjs.org/docs/deployment
 
